@@ -26,5 +26,4 @@ mongoose.connection.on('error', console.error.bind(console, 'Connection error:')
 mongoose.connection.once('open', function () {
 	console.log("Connected to the database");
 	console.log("Opening application in Google Chrome");
-	opn("http://levelSense.sg", { app: ["chrome"] });
 });
