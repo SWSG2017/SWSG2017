@@ -1,5 +1,5 @@
 <section class="content-header">
-  <h1><i class="fa fa-dashboard"></i> Dashboard</h1>
+  <h1><i class="fa fa-dashboard"></i> My Dashboard</h1>
 </section>
 
 <section class="content animate-bottom">
@@ -10,10 +10,10 @@
       <div class="small-box bg-aqua">
         <div class="inner">
           <h3>4</h3>
-          <p>Inventory Stores</p>
+          <p>Menus</p>
         </div>
         <div class="icon">
-          <i class="ion ion-ios-cart"></i>
+          <i class="fa fa-cutlery"></i>
         </div>
       </div>
     </div>
@@ -23,10 +23,23 @@
         <div class="inner">
             <h3 ng-bind="totalQty"></h3>
 
-          <p>Monitoring Stocks</p>
+          <p>Menu items</p>
         </div>
         <div class="icon">
-          <i class="ion ion-stats-bars"></i>
+          <i class="fa fa-barcode"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-xs-6">
+      <div class="small-box bg-yellow">
+        <div class="inner">
+          <h3 ng-bind="totalLowQty"></h3>
+
+          <p>Customer's orders</p>
+        </div>
+        <div class="icon">
+          <i class="fa fa-envelope"></i>
         </div>
       </div>
     </div>
@@ -36,30 +49,17 @@
         <div class="inner">
           <h3 ng-bind="totalLowQty"></h3>
 
-          <p>Low Stocks</p>
+          <p>Unordered food items</p>
         </div>
         <div class="icon">
-          <i class="ion ion-alert-circled"></i>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-3 col-xs-6">
-      <div class="small-box bg-yellow">
-        <div class="inner">
-          <h3>0</h3>
-
-          <p>Overstock</p>
-        </div>
-        <div class="icon">
-          <i class="ion ion-soup-can"></i>
+          <i class="fa fa-thumbs-down"></i>
         </div>
       </div>
     </div>
   </div>
 
   <div class="row">
-  <div class="col-md-5">
+  <div class="col-md-6">
   <section class="content-header">
     <div class="box">
       <div class="box-header">
@@ -81,33 +81,33 @@
           <tr>
             <th>Store Name</th>
             <th>Last Updated</th>
-            <th>Total Stocks</th>
-            <th>Low Stocks</th>
-            <th>Overstock</th>
+            <th>Total items</th>
+            <th>Customer's orders</th>
+            <th>Unordered food items</th>
           </tr>
           <tr>
-            <td>Delivery Suite</td>
+            <td>McDonalds Menu</td>
             <td ng-bind="date"></td>
             <td ng-bind="totalQty"></td>
             <td ng-bind="totalLowQty"></td>
             <td>0</td>
           </tr>
           <tr>
-            <td>Women Suite</td>
+            <td>Food Menu</td>
             <td ng-bind="date"></td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
           </tr>
           <tr>
-            <td>Infant Suite</td>
+            <td>Drinks Menu</td>
             <td ng-bind="date"></td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
           </tr>
           <tr>
-            <td>Elderly Suite </td>
+            <td>Dessert Menu</td>
             <td ng-bind="date"></td>
             <td>0</td>
             <td>0</td>
