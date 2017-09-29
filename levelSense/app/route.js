@@ -9,13 +9,13 @@ app.use(express.static("./app/client"));
 
 module.exports = function(app) {
 	// Route server
-	app.use('/server/email', require('./server/email'));
-	app.use('/server/info', require('./server/info'));
-	app.use('/server/stock', require('./server/stock'));
+	//app.use('/server/email', require('./server/email'));
+	app.use('/server/orders', require('./server/orders'));
+	app.use('/server/menus', require('./server/menus'));
 
 	// Route client
 	// Re-route to same page to fix broken link when refresh
 	app.get('*', function(req, res) {
   res.sendFile(__dirname + '/client/index.html')
 	});
-}
+};

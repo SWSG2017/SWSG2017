@@ -1,6 +1,53 @@
 var fs = require('fs');
-var Info = require('./info.model'); // Information database storage
+var AllRestOrders = require('./orders.model'); // Information database storage
 
+const uniqueID = "0000";
+
+// Update stock
+module.exports.updateOrder = function (req, res) {
+	var name = req.body.name;
+	var price = req.body.price;
+	var isPromo = req.body.isPromo;
+	var isSides = req.body.isSides;
+	var isBvg = req.body.isBvg;
+	var qty = req.body.qty;
+	var comment = req.body.comment;
+
+	Stock.findOneAndUpdate(
+		{ uniqueID: uniqueID },
+		{ $push: { data: {
+			name: name,
+			price: price,
+			isPromo: isPromo,
+			isSides: isSides,
+			isBvg: isBvg,
+			qty: qty,
+			comment: comment } }
+			}, { new: true },
+			function (err) {
+				if (err) return res.json(err);
+				res.json({
+				"code": 0,
+				"result": "Successfully added new Restaurant Order"
+			});
+		}
+	);
+};
+
+// Adds default restaurant order if the database is empty
+(function defaultRestOrder() {
+	AllRestOrders.count({}, function(err, count) {
+		if(count == 0) {
+			var newRestOrders = new AllRestOrders({uniqueID: uniqueID});
+			newRestOrders.save(function (err) {
+				if (err) return res.json(err);
+				console.log("Default restaurant orders sucessfully added!");
+			});
+		}
+	});
+})();
+
+/*
 // Change the location of the store
 module.exports.changeLocation = function(req, res) {
 	var oldLocation = req.body.oldLocation;
@@ -51,7 +98,7 @@ module.exports.changeEmail = function(req, res) {
 		res.json({
 			"code": 20,
 			"Result": "Invalid Email"
-		})
+		});
 	}
 	else if(oldEmail == newEmail) {
 		res.json({
@@ -106,3 +153,4 @@ module.exports.getInfo = function (req, res) {
 		}
 	});
 })();
+*/

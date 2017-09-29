@@ -21,10 +21,10 @@ var server = app.listen(80, function () {
 
 // Connecting to database
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://levelsense:0123456789@ds113282.mlab.com:13282/levelsense');
+mongoose.connect('mongodb://foodmenu:0123456789@ds157624.mlab.com:57624/foodmenu');
 mongoose.connection.on('error', console.error.bind(console, 'Connection error:'));
 mongoose.connection.once('open', function () {
 	console.log("Connected to the database");
-	console.log("Opening application in Google Chrome");
-	opn("http://levelSense.sg", { app: ["chrome"] });
+	//console.log("Opening application in Google Chrome");
+	//opn("http://levelSense.sg", { app: ["chrome"] });
 });
