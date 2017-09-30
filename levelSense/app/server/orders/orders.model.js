@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-var order = mongoose.Schema({
+var orderItem = mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -30,15 +30,21 @@ var order = mongoose.Schema({
 	}
 }, { _id: false });
 
+var order = mongoose.Schema({
+	order: {
+		type: [orderItem]
+	}
+});
+
 var allRestOrdersSchema = mongoose.Schema({
-	uniqueID: {
-		type: String,
-		required: true,
-		unique: true
-	},
-	restOrders: {
+  uniqueID: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  restOrders: {
 		type: [order]
 	}
 });
 
-module.exports = mongoose.model("Orders", allRestOrdersSchema);
+module.exports = mongoose.model("allRestOrders", allRestOrdersSchema);

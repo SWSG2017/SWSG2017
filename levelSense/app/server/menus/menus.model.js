@@ -3,8 +3,7 @@ var mongoose = require("mongoose");
 var menuItems = mongoose.Schema({
 	name: {
 		type: String,
-		required: true,
-		unique: true
+		required: true
 	},
 	price: {
 		type: Number,
@@ -27,6 +26,10 @@ var menuItems = mongoose.Schema({
 	},
 	comment: {
 		type: String
+	},
+	img: {
+		data: Buffer,
+		contentType: String
 	}
 }, { _id: false });
 

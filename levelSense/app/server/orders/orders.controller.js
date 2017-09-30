@@ -1,28 +1,21 @@
 var fs = require('fs');
-var AllRestOrders = require('./orders.model'); // Information database storage
+var allRestOrders = require('./orders.model'); // Order database storage
 
 const uniqueID = "0000";
 
 // Update stock
 module.exports.updateOrder = function (req, res) {
-	var name = req.body.name;
-	var price = req.body.price;
-	var isPromo = req.body.isPromo;
-	var isSides = req.body.isSides;
-	var isBvg = req.body.isBvg;
-	var qty = req.body.qty;
-	var comment = req.body.comment;
+	var order = [];
 
-	Stock.findOneAndUpdate(
+	req.body.result.forEach(function(item) {
+		order.push(item);
+	});
+	console.log(order);
+
+	allRestOrders.findOneAndUpdate(
 		{ uniqueID: uniqueID },
-		{ $push: { data: {
-			name: name,
-			price: price,
-			isPromo: isPromo,
-			isSides: isSides,
-			isBvg: isBvg,
-			qty: qty,
-			comment: comment } }
+		{ $push: { restOrders: {
+			order: order } }
 			}, { new: true },
 			function (err) {
 				if (err) return res.json(err);
@@ -36,7 +29,7 @@ module.exports.updateOrder = function (req, res) {
 
 // Adds default restaurant order if the database is empty
 (function defaultRestOrder() {
-	AllRestOrders.count({}, function(err, count) {
+	allRestOrders.count({}, function(err, count) {
 		if(count == 0) {
 			var newRestOrders = new AllRestOrders({uniqueID: uniqueID});
 			newRestOrders.save(function (err) {
@@ -46,111 +39,3 @@ module.exports.updateOrder = function (req, res) {
 		}
 	});
 })();
-
-/*
-// Change the location of the store
-module.exports.changeLocation = function(req, res) {
-	var oldLocation = req.body.oldLocation;
-	var newLocation = req.body.newLocation;
-
-	if(newLocation == "") {
-		res.json({
-			"code": 10,
-			"result": "Empty Location"
-		});
-	}
-	else if(oldLocation == newLocation) {
-		res.json({
-			"code": 20,
-			"result": "Identical Location"
-		});
-	}
-	else {
-		Info.findOneAndUpdate(
-			{ location: oldLocation },
-			{ location: newLocation },
-			{ new: true },
-			function(err, newLocation) {
-				if(err) return res.json(err);
-
-				res.json({
-					"code": 0,
-					"result": "Successful"
-				});
-			}
-		);
-	}
-}
-
-// Change the email address for receiver of Alert and Report
-module.exports.changeEmail = function(req, res) {
-	var oldEmail = req.body.oldEmail;
-	var newEmail = req.body.newEmail;
-	var emailTest = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
-
-	if(newEmail == "") {
-		res.json({
-			"code": 10,
-			"Result": "Empty Email"
-		});
-	}
-	else if(!emailTest.test(newEmail)) {
-		res.json({
-			"code": 20,
-			"Result": "Invalid Email"
-		});
-	}
-	else if(oldEmail == newEmail) {
-		res.json({
-			"code": 30,
-			"Result": "Identical Email"
-		});
-	}
-	else {
-		Info.findOneAndUpdate(
-			{ email: oldEmail },
-			{ email: newEmail },
-			function(err, storageID) {
-				if(err) return res.json(err);
-
-				res.json({
-					"code": 0,
-					"Result": "Successful"
-				});
-			}
-		);
-	}
-}
-
-// Retrieve info when there is a HTTP request
-module.exports.getInfo = function (req, res) {
-	Info.find({}, { data: { $slice: -1 } }, function (err, info) {
-		if (err) return res.json(err);
-
-		info = info.map(function (Info) {
-			return {
-        location: Info.location,
-        email: Info.email
-      };
-    });
-
-    res.json({
-			"code": 0,
-			"result": info
-		});
-	});
-};
-
-// Adds default info if the database is empty
-(function defaultInfo() {
-	var newInfo = new Info({location: "NILL", email: "kkhprojecttesting@gmail.com"});
-	Info.count({}, function( err, count) {
-  	if(count == 0) {
-			newInfo.save(function (err, info) {
-				if (err) return res.json(err);
-				console.log("Default Info sucessfully added!");
-			});
-		}
-	});
-})();
-*/

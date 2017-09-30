@@ -1,18 +1,20 @@
 var fs = require("fs");
-var Menus = require("./menus.model"); // Menu database storage
+var menus = require("./menus.model"); // Menu database storage
 
 const uniqueID = "0000";
 
-// Add menu items
+// Adds menu item
 module.exports.addMenuItem = function (req, res) {
 	var name = req.body.name;
 	var price = req.body.price;
 	var isPromo = req.body.isPromo;
 	var isSides = req.body.isSides;
 	var isBvg = req.body.isBvg;
-
-	Menus.findOneAndUpdate(
-		{ uniqueID: uniqueID },
+	
+	// Checks for duplicate menu item names before adding
+	menus.findOneAndUpdate(
+		{ uniqueID: uniqueID,
+		"menu.name": { $ne: name } },
 		{ $push: { menu: {
 			name: name,
 			price: price,
@@ -20,31 +22,39 @@ module.exports.addMenuItem = function (req, res) {
 			isSides: isSides,
 			isBvg: isBvg,
 			qty: 0,
-			comment: "" } }
+			comment: "",
+		 	img: { data: fs.readFileSync(req.body.img), contentType: "image/png"}} }
 		}, { new: true },
-		function (err) {
+		function (err, doc) {
 			if (err) return res.json(err);
-			res.json({
-				"code": 0,
-				"result": "Successfully added new Menu Item: " + name
-			});
+			else if(doc == null) {
+				res.json({
+					"code": 10,
+					"result": "Unsuccessful, duplicate Menu Item: " + name
+				});
+			} else {
+				res.json({
+					"code": 0,
+					"result": "Successfully added new Menu Item: " + name
+				});
+			}
 		}
 	);
 };
 
-// Change menu name
+// Changes menu name
 module.exports.changeMenuItemName = function (req, res) {
 	var uniqueID = req.body.uniqueID;
 	var currName = req.body.currName;
 	var newName = req.body.newName;
 
-	if(oldLocation == newLocation) {
+	if(currName == newName) {
 		res.json({
 			"code": 20,
 			"result": "Identical names"
 		});
 	} else {
-		Menus.update({
+		menus.update({
 			"uniqueID": uniqueID,
 		 	"menu.name": currName },
 			{"menu.$.name": newName },
@@ -52,7 +62,7 @@ module.exports.changeMenuItemName = function (req, res) {
 				if(err) return res.json(err);
 				res.json({
 					"code": 0,
-					"result": "Successfully changed the following Menu Item " + currName
+					"result": "Successfully changed the following Menu Item: " + currName
 									+ ", New Menu Item Name: " + newName
 				});
 			}
@@ -60,13 +70,13 @@ module.exports.changeMenuItemName = function (req, res) {
 	}
 };
 
-// Change menu item price
+// Changes menu item price
 module.exports.changeMenuItemPrice = function (req, res) {
 	var uniqueID = req.body.uniqueID;
 	var name = req.body.name;
 	var newPrice = req.body.newPrice;
 
-	Menus.update({
+	menus.update({
 		"uniqueID": uniqueID,
 	 	"menu.name": name },
 		{"menu.$.price": newPrice },
@@ -74,20 +84,20 @@ module.exports.changeMenuItemPrice = function (req, res) {
 			if(err) return res.json(err);
 			res.json({
 				"code": 0,
-				"result": "Successfully changed the following Menu Item " + name
+				"result": "Successfully changed the following Menu Item: " + name
 								+ ", new price: " + newPrice
 			});
 		}
 	);
 };
 
-// Change menu item promotion
+// Changes menu item promotion
 module.exports.changeMenuItemIsPromo = function (req, res) {
 	var uniqueID = req.body.uniqueID;
 	var name = req.body.name;
 	var newIsPromo = req.body.newIsPromo;
 
-	Menus.update({
+	menus.update({
 		"uniqueID": uniqueID,
 	 	"menu.name": name },
 		{"menu.$.isPromo": newIsPromo },
@@ -95,36 +105,36 @@ module.exports.changeMenuItemIsPromo = function (req, res) {
 			if(err) return res.json(err);
 			res.json({
 				"code": 0,
-				"result": "Successfully changed the following Menu Item " + name
+				"result": "Successfully changed the following Menu Item: " + name
 								+ ", new promotion value: " + newIsPromo
 			});
 		}
 	);
 };
 
-// Delete menu item
+// Deletes menu item
 module.exports.deleteMenuItem = function (req, res) {
 	var uniqueID = req.body.uniqueID;
 	var name = req.body.name;
 
-	Menus.update({ "uniqueID": uniqueID },
+	menus.update({ "uniqueID": uniqueID },
 		{$pull: { menu: { name: name } } },
 		{ multi: false },
 		function(err) {
 			if(err) return res.json(err);
 			res.json({
 				"code": 0,
-				"result": "Successfully deleted the following Menu Item " + name
+				"result": "Successfully deleted the following Menu Item: " + name
 			});
 		}
 	);
 };
 
-// Retrieve menu when there is a HTTP request
+// Retrieves menu when there is a HTTP request
 module.exports.getMenu = function (req, res) {
 	var uniqueID = req.params.uniqueID;
 
-	Menus.find({uniqueID: uniqueID}, function (err, menus) {
+	menus.find({uniqueID: uniqueID}, function (err, menus) {
 		if (err) return res.json(err);
 		menu = menus.map(function (menu) {
 			return {
@@ -147,11 +157,11 @@ var sortResult = function(menuItems) {
 	return menuItems;
 };
 
-// Adds default restaurant if the database is empty
+// Adds default restaurant menu if the database is empty
 (function defaultMenu() {
-	Menus.count({}, function(err, count) {
+	menus.count({}, function(err, count) {
 		if(count == 0) {
-			var newMenu = new Menus({uniqueID: uniqueID});
+			var newMenu = new menus({uniqueID: uniqueID});
 			newMenu.save(function (err) {
 				if (err) return res.json(err);
 				console.log("Default restaurant menu sucessfully added!");

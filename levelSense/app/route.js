@@ -9,7 +9,6 @@ app.use(express.static("./app/client"));
 
 module.exports = function(app) {
 	// Route server
-	//app.use('/server/email', require('./server/email'));
 	app.use('/server/orders', require('./server/orders'));
 	app.use('/server/menus', require('./server/menus'));
 
