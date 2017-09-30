@@ -1,5 +1,5 @@
 var app = angular.module("app", ["ngRoute"]);
-var stocks;
+var menu;
 const LOW = 34;
 
 app.config(function($routeProvider, $locationProvider) {
@@ -12,29 +12,27 @@ app.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
 });
 
-// Retrieve stocks from server for Overview and Low Stocks
-app.controller("stockCtrl", function($scope, $http) {
+// Retrieve menu from server for Menu Item page
+app.controller("menuCtrl", function($scope, $http) {
   $scope.getData = function() {
     $http({
       method: "GET",
-      url: "/server/stock/101"
-    }).then(function mySuccess(response) {
-        stocks = response.data.result;
-        if(typeof stocks != "undefined") { $scope.totalQty = stocks.length; }
-        $scope.stocks = stocks;
-        var lowStocks = filterOnlyEqualAndBelow(response.data.result, LOW);
-        $scope.totalLowQty = lowStocks.length;
-        $scope.lowStocks = lowStocks;
+      url: "/server/menus/0000"
+    }).then(function mySuccess(res) {
+        menu = res.data.result[0].menu;
+        console.log(menu);
+        if(typeof menu != "undefined") { $scope.totalQty = menu.length; }
+        $scope.menu = menu;
         $scope.date = Date().substring(4,21);
       }, function myError(response) {
-        $scope.stocks = response.statusText;
+        $scope.menu = response.statusText;
       });
   };
   setInterval($scope.getData, 2000);
 });
 
 // Display the Settings dropdown
-app.controller("settingsCtrl", function($scope) { $scope.storageID = stocks; });
+app.controller("settingsCtrl", function($scope) { $scope.storageID = menu; });
 
 // Send the form data on submission to server and display response
 function formController($scope, $http) {
@@ -51,9 +49,9 @@ function formController($scope, $http) {
 }
 
 // Filter stock based on percentage requested
-var filterOnlyEqualAndBelow = function (stocks, percentage) {
-  if(typeof stocks != "undefined") {
-	   return stocks.filter(function (stock) {
+var filterOnlyEqualAndBelow = function (menu, percentage) {
+  if(typeof menu != "undefined") {
+	   return menu.filter(function (stock) {
        return stock.percentage <= percentage;
 	    });
     } else { return []; }
