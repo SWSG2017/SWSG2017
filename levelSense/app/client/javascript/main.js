@@ -5,8 +5,8 @@ const LOW = 34;
 app.config(function($routeProvider, $locationProvider) {
     $routeProvider
     .when("/", { templateUrl : "/html/dashboard.html" })
-    .when("/DSStock", { templateUrl : "/html/stock.html" })
-    .when("/DSLow", { templateUrl : "/html/low.html" })
+    .when("/DSMenuItems", { templateUrl : "/html/stock.html" })
+    .when("/DSAllOrders", { templateUrl : "/html/low.html" })
     .when("/settings", { templateUrl : "/html/settings.html" });
     $locationProvider.html5Mode(true);
 });
